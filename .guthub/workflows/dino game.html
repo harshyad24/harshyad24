@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mini Dino Game</title>
+<style>
+  body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; margin: 0; }
+  canvas { background: #fff; border: 2px solid #333; }
+</style>
+</head>
+<body>
+<canvas id="game" width="600" height="150"></canvas>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+let dino = {
+  x: 50,
+  y: 110,
+  width: 40,
+  height: 40,
+  yVelocity: 0,
+  gravity: 1.2,
+  jumpForce: 18,
+  jumping: false
+};
+
+let cactus = {
+  x: canvas.width,
+  y: 110,
+  width: 20,
+  height: 40,
+  speed: 6
+};
+
+let score = 0;
+let gameOver = false;
+
+function drawDino() {
+  ctx.fillStyle = '#555';
+  ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+  // Dino eye
+  ctx.fillStyle = '#000';
+  ctx.fillRect(dino.x + 30, dino.y + 10, 6, 6);
+}
+
+function drawCactus() {
+  ctx.fillStyle = '#0b6e0b';
+  ctx.fillRect(cactus.x, cactus.y, cactus.width, cactus.height);
+}
+
+function displayScore() {
+  ctx.fillStyle = '#333';
+  ctx.font = '20px Arial';
+  ctx.fillText('Score: ' + score, 10, 30);
+}
+
+function resetGame() {
+  cactus.x = canvas.width;
+  score = 0;
+  gameOver = false;
+  dino.y = 110;
+  dino.yVelocity = 0;
+  dino.jumping = false;
+  loop();
+}
+
+function update() {
+  if (gameOver) return;
+
+  // Dino physics
+  dino.yVelocity += dino.gravity;
+  dino.y += dino.yVelocity;
+
+  if (dino.y > 110) {
+    dino.y = 110;
+    dino.yVelocity = 0;
+    dino.jumping = false;
+  }
+
+  // Move cactus
+  cactus.x -= cactus.speed;
+
+  // Reset cactus position and increase score
+  if (cactus.x + cactus.width < 0) {
+    cactus.x = canvas.width + Math.random() * 200;
+    score++;
+    if (score % 5 === 0 && cactus.speed < 15) {
+      cactus.speed += 1; // speed up cactus every 5 points
+    }
+  }
+
+  // Check collision
+  if (
+    dino.x < cactus.x + cactus.width &&
+    dino.x + dino.width > cactus.x &&
+    dino.y + dino.height > cactus.y
+  ) {
+    gameOver = true;
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Ground line
+  ctx.strokeStyle = '#888';
+  ctx.beginPath();
+  ctx.moveTo(0, 150);
+  ctx.lineTo(canvas.width, 150);
+  ctx.stroke();
+
+  drawDino();
+  drawCactus();
+  displayScore();
+
+  if (gameOver) {
+    ctx.fillStyle = 'red';
+    ctx.font = '40px Arial';
+    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+    ctx.font = '20px Arial';
+    ctx.fillText('Press Space to Restart', canvas.width / 2 - 100, canvas.height / 2 + 30);
+  }
+}
+
+function loop() {
+  update();
+  draw();
+  if (!gameOver) {
+    requestAnimationFrame(loop);
+  }
+}
+
+document.body.onkeydown = function(e) {
+  if (e.code === 'Space') {
+    if (!dino.jumping && !gameOver) {
+      dino.yVelocity = -dino.jumpForce;
+      dino.jumping = true;
+    } else if (gameOver) {
+      resetGame();
+    }
+  }
+};
+
+loop();
+</script>
+</body>
+</html>
