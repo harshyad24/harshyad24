@@ -22,3 +22,12 @@ Hi, my name is Harsh Yadav. I’m a graduate in Information Technology & Analyti
 [![](https://visitcount.itsvg.in/api?id=harshyad24&icon=0&color=0)](https://visitcount.itsvg.in)
 
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
+
+<div align="center">
+  <h2>🎮 Pac-Man eating my contributions 🎮</h2>
+  <br>
+  
+  ![Pacman](https://raw.githubusercontent.com/harshyad24/harshyad24/output/pacman.svg)
+  
+  <br/><br/>
+</div>
